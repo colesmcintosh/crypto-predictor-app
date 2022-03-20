@@ -9,14 +9,33 @@ from plotly import graph_objs as go
 START = "2015-01-01"
 TODAY = date.today().strftime("%Y-%m-%d")
 
-st.set_page_config(page_title='Stock Predictions', layout = 'wide', initial_sidebar_state = 'auto')
+st.set_page_config(page_title='Crypto Predictions', layout = 'wide', initial_sidebar_state = 'auto')
 
-st.title("Stock Predictions")
+st.title("Crypto Predictions")
 
-stocks = ("AAPL", "GOOG", "TSLA", "MSFT", "GME")
-selected_stock = st.selectbox("Select stock", stocks, format_func=lambda stock: f"{yf.Ticker(stock).info['longName']} ({stock})")
+cryptos = (
+"ETH-USD",
+"BTC-USD",
+"FIL-USD",
+"XTZ-USD",
+"ETC-USD",
+"MANA-USD",
+"BCH-USD",
+"LINK-USD",
+"LTC-USD",
+"CRO-USD",
+"MATIC-USD",
+"SHIB-USD",
+"DOGE-USD",
+"ADA-USD",
+"XRP-USD",
+"USDC-USD",
+"BNB-USD",
+"USDT-USD")
 
-n_years = st.slider("Years of predication:", 1, 4)
+selected_crypto = st.selectbox("Select crypto", cryptos, format_func=lambda crypto: f"{yf.Ticker(crypto).info['name']} ({crypto})")
+
+n_years = st.slider("Years of predication:", 1, 5)
 period = n_years * 365
 
 @st.cache
@@ -27,16 +46,16 @@ def load_data(ticker):
     return data
 
 data_load_state = st.text("Loading data...")
-data = load_data(selected_stock)
+data = load_data(selected_crypto)
 data_load_state.text("Data has loaded.")
 
-st.subheader(f"{selected_stock} data")
+st.subheader(f"{selected_crypto} data")
 st.write(data.tail())
 
 def plot_raw_data():
     fig = go.Figure()
-    fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="Stock Open"))
-    fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Stock Close"))
+    fig.add_trace(go.Scatter(x=data['Date'], y=data['Open'], name="Open"))
+    fig.add_trace(go.Scatter(x=data['Date'], y=data['Close'], name="Close"))
     fig.layout.update(title_text="Actual Prices", xaxis_title="Date", yaxis_title="Price", xaxis_rangeslider_visible=True)
     st.plotly_chart(fig)
 
